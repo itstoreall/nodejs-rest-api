@@ -1,26 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { listContacts } = require('../../model/index');
+const model = require('../../model/index');
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (_, res, next) => {
   try {
-    const response = await listContacts();
-    res.json(response);
+    res.json(await model.listContacts());
   } catch (error) {
     next(error);
   }
 });
 
-// ====
-router.get('/error', function (req, res) {
-  throw new Error("it's Error (from server.js)");
-  // res.json({ message: "it's get /error (from server.js)" });
-});
-// ====
-
 router.get('/:contactId', async (req, res, next) => {
-  res.send("it's get:contactId");
-  res.json({ message: 'template message' });
+  try {
+    res.json(await model.getContactById(req.params.contactId));
+  } catch (error) {
+    next(error);
+  }
 });
 
 // router.post('/', async (req, res, next) => {
@@ -37,5 +32,12 @@ router.get('/:contactId', async (req, res, next) => {
 //   res.send("it's patch:contactId");
 //   res.json({ message: 'template message' });
 // });
+
+// ====
+// router.get('/error', function (req, res) {
+//   throw new Error("it's Error (from server.js)");
+//   // res.json({ message: "it's get /error (from server.js)" });
+// });
+// ====
 
 module.exports = router;

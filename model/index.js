@@ -1,12 +1,12 @@
 // const fs = require('fs/promises');
 const contacts = require('./contacts.json');
 
-const listContacts = async () => {
-  console.log("it's a listContacts func");
-  return contacts;
-};
+// GET
+const listContacts = async () => contacts;
 
-const getContactById = async contactId => {};
+// GET by ID
+const getContactById = async contactId =>
+  contacts.filter(el => el.id === Number(contactId));
 
 const removeContact = async contactId => {};
 
