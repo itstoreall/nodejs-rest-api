@@ -18,7 +18,7 @@ const getContactById = async contactId => {
     const contacts = await listContacts();
 
     return await JSON.parse(contacts).find(
-      el => el.id.toString() === contactId,
+      contact => contact.id.toString() === contactId,
     );
   } catch (error) {
     console.log(error.message);
@@ -35,7 +35,35 @@ const addContact = async body => {
   }
 };
 
-const removeContact = async contactId => {};
+const removeContact = async contactId => {
+  try {
+    const contacts = await listContacts();
+
+    const filteredContacts = await JSON.parse(contacts).filter(contact => {
+      return contact.id.toString() !== contactId;
+    });
+
+    await fs.writeFile(contactsPath, JSON.stringify(filteredContacts, null, 2));
+    const status = filteredContacts.length !== JSON.parse(contacts).length;
+
+    return status
+      ? { status: 'success', code: 200, message: 'contact deleted' }
+      : { status: 'error', code: 404, message: 'Not found' };
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// const contacts = await listContacts();
+//   const newContacts = contacts.filter(contact => {
+//     return contact.id !== Number(contactId);
+//   });
+//   await fs.writeFile(contactsPath, JSON.stringify(newContacts, null, 2));
+//   return newContacts;
+// } catch (error) {
+//   console.log(error.message);
+//   return;
+// }
 
 const updateContact = async (contactId, body) => {};
 

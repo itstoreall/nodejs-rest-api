@@ -22,9 +22,18 @@ router.get('/', async (req, res, next) => {
 
 // GET by ID
 router.get('/:contactId', async (req, res, next) => {
+  const id = req.params.contactId;
   try {
-    const data = await model.getContactById(req.params.contactId);
+    const data = await model.getContactById(id);
 
+    // const { code, status, message } = await model.removeContact(id);
+
+    // res.status(code).json({
+    //   status,
+    //   code,
+    //   message,
+    // });
+    /* eslint-disable */
     data
       ? res.status(200).json({
           status: 'success',
@@ -36,6 +45,7 @@ router.get('/:contactId', async (req, res, next) => {
           code: 404,
           message: 'Not found',
         });
+    /* eslint-enable */
   } catch (error) {
     next(error);
   }
@@ -67,10 +77,37 @@ router.post('/', async (req, res, next) => {
   res.end();
 });
 
-// router.delete('/:contactId', async (req, res, next) => {
-//   res.send("it's delete:contactId");
-//   res.json({ message: 'template message' });
-// });
+// DEL
+router.delete('/:contactId', async (req, res, next) => {
+  const id = req.params.contactId;
+  try {
+    const { code, status, message } = await model.removeContact(id);
+
+    res.status(code).json({
+      status,
+      code,
+      message,
+    });
+  } catch (error) {
+    next(error);
+  }
+  res.end();
+});
+// res.send("it's delete:contactId");
+// res.json({ message: 'template message' });
+/*
+try {
+  const contacts = await listContacts();
+  const newContacts = contacts.filter(contact => {
+    return contact.id !== Number(contactId);
+  });
+  await fs.writeFile(contactsPath, JSON.stringify(newContacts, null, 2));
+  return newContacts;
+} catch (error) {
+  console.log(error.message);
+  return;
+}
+*/
 
 // router.patch('/:contactId', async (req, res, next) => {
 //   res.send("it's patch:contactId");
