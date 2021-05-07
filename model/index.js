@@ -78,16 +78,18 @@ const removeContact = async contactId => {
 const updateContact = async (contactId, body) => {
   const { contacts } = await listContacts();
 
-  const contact = await contacts.find(
-    contact => contact.id.toString() === contactId,
-  );
+  // {"message": "missing fields"}
 
-  const newContact = {
-    ...contact,
-    ...body,
-  };
+  const cont = await contacts.map(contact => {
+    return contact.id.toString() === contactId
+      ? (contact = {
+          ...contact,
+          ...body,
+        })
+      : contact;
+  });
 
-  console.log('newContact:', newContact);
+  await fs.writeFile(contactsPath, JSON.stringify(cont, null, 2));
 
   return 'Done!!!';
 };
