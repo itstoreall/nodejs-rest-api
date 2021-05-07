@@ -74,7 +74,23 @@ const removeContact = async contactId => {
   }
 };
 
-const updateContact = async (contactId, body) => {};
+// PATCH
+const updateContact = async (contactId, body) => {
+  const { contacts } = await listContacts();
+
+  const contact = await contacts.find(
+    contact => contact.id.toString() === contactId,
+  );
+
+  const newContact = {
+    ...contact,
+    ...body,
+  };
+
+  console.log('newContact:', newContact);
+
+  return 'Done!!!';
+};
 
 module.exports = {
   listContacts,

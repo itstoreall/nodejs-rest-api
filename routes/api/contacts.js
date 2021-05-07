@@ -81,8 +81,25 @@ router.delete('/:contactId', async (req, res, next) => {
 
 // PATCH
 router.patch('/:contactId', async (req, res, next) => {
-  res.send("it's patch:contactId");
-  res.json({ message: 'template message' });
+  const id = req.params.contactId;
+  const body = req.body;
+
+  try {
+    const response = await model.updateContact(id, body);
+    console.log('response:', response);
+    // res.status(code).json({
+    //   status,
+    //   code,
+    //   contact,
+    //   message,
+    // });
+  } catch (error) {
+    next(error);
+  }
+  res.end();
+
+  // res.send("it's patch:contactId");
+  // res.json({ message: 'template message' });
 });
 
 // ====
