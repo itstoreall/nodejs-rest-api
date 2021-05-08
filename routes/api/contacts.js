@@ -1,72 +1,54 @@
 const express = require('express');
 const router = express.Router();
-const model = require('../../model/index');
-const { nanoid } = require('nanoid');
+const Contacts = require('../../model/contacts');
 
 // GET
 router.get('/', async (_, res, next) => {
   try {
-    const { code, status, contacts } = await model.listContacts();
+    const data = await Contacts.getAll();
 
-    res.status(code).json({
-      status,
-      code,
-      contacts,
-    });
+    return res.status(200).json({ status: 'success', code: 200, data });
   } catch (error) {
     next(error);
   }
-  res.end();
 });
 
 // GET by ID
-router.get('/:contactId', async (req, res, next) => {
-  const id = req.params.contactId;
-  try {
-    const { code, status, contact, message } = await model.getContactById(id);
+// router.get('/:id', async (req, res, next) => {
+//   const id = req.params.id;
+//   try {
+//     const { code, status, contact, message } = await Contacts.getById(id);
 
-    res.status(code).json({
-      status,
-      code,
-      message,
-      contact,
-    });
-  } catch (error) {
-    next(error);
-  }
-  res.end();
-});
+//     res.status(code).json({
+//       status,
+//       code,
+//       message,
+//       contact,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+//   res.end();
+// });
 
 // POST
 router.post('/', async (req, res, next) => {
-  const { name, email, phone } = req.body;
-  const body = {
-    id: nanoid(),
-    name,
-    email,
-    phone,
-  };
-
   try {
-    const { code, status, contact, message } = await model.addContact(body);
+    const contact = await Contacts.create(req.body);
 
-    res.status(code).json({
-      status,
-      code,
-      contact,
-      message,
-    });
+    return res
+      .status(201)
+      .json({ status: 'success', code: 201, data: { contact } });
   } catch (error) {
     next(error);
   }
-  res.end();
 });
 
 // DEL
-router.delete('/:contactId', async (req, res, next) => {
-  const id = req.params.contactId;
+router.delete('/:id', async (req, res, next) => {
+  const id = req.params.id;
   try {
-    const { code, status, message } = await model.removeContact(id);
+    const { code, status, message } = await Contacts.remove(id);
 
     res.status(code).json({
       status,
@@ -80,33 +62,17 @@ router.delete('/:contactId', async (req, res, next) => {
 });
 
 // PATCH
-router.patch('/:contactId', async (req, res, next) => {
+router.patch('/:id', async (req, res, next) => {
   const id = req.params.contactId;
   const body = req.body;
 
   try {
-    const response = await model.updateContact(id, body);
+    const response = await Contacts.update(id, body);
     console.log('response:', response);
-    // res.status(code).json({
-    //   status,
-    //   code,
-    //   contact,
-    //   message,
-    // });
   } catch (error) {
     next(error);
   }
   res.end();
-
-  // res.send("it's patch:contactId");
-  // res.json({ message: 'template message' });
 });
-
-// ====
-// router.get('/error', function (req, res) {
-//   throw new Error("it's Error (from server.js)");
-//   // res.json({ message: "it's get /error (from server.js)" });
-// });
-// ====
 
 module.exports = router;

@@ -2,25 +2,22 @@ const fs = require('fs/promises');
 const contacts = require('./contacts.json');
 const path = require('path');
 const contactsPath = path.join('./model/contacts.json');
+const { nanoid } = require('nanoid');
 
 // GET
-const listContacts = async () => {
-  try {
-    const response = await fs.readFile(contactsPath, 'utf-8');
-    const contacts = JSON.parse(response);
-
-    return { status: 'success', code: 200, contacts };
-  } catch (error) {
-    console.log(error.message);
-  }
-};
+const getAll = async () => contacts;
 
 // GET by ID
-const getContactById = async contactId => {
+const getById = async id => {
+  //
+};
+
+/*
+const getById = async id => {
   try {
-    const { contacts } = await listContacts();
+    const { contacts } = await getAll();
     const contact = await contacts.find(
-      contact => contact.id.toString() === contactId,
+      contact => contact.id.toString() === id,
     );
 
     return contact
@@ -30,9 +27,28 @@ const getContactById = async contactId => {
     console.log(error.message);
   }
 };
+*/
 
-// ADD
-const addContact = async body => {
+// POST
+const create = async body => {
+  const id = nanoid();
+
+  const record = {
+    id,
+    ...body,
+  };
+
+  const contacts = await getAll();
+  const contactArr = contacts.contacts;
+  contactArr.push(record);
+
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+
+  return record;
+};
+
+/*
+const create = async body => {
   const values = Object.values(body).filter(value => value !== '');
 
   if (values.length !== 4) {
@@ -52,14 +68,15 @@ const addContact = async body => {
     }
   }
 };
+*/
 
 // DEL
-const removeContact = async contactId => {
+const remove = async id => {
   try {
-    const { contacts } = await listContacts();
+    const { contacts } = await getAll();
 
     const filteredContacts = await contacts.filter(
-      contact => contact.id.toString() !== contactId,
+      contact => contact.id.toString() !== id,
     );
 
     await fs.writeFile(contactsPath, JSON.stringify(filteredContacts, null, 2));
@@ -75,13 +92,13 @@ const removeContact = async contactId => {
 };
 
 // PATCH
-const updateContact = async (contactId, body) => {
-  const { contacts } = await listContacts();
+const update = async (id, body) => {
+  const { contacts } = await getAll();
 
   // {"message": "missing fields"}
 
   const cont = await contacts.map(contact => {
-    return contact.id.toString() === contactId
+    return contact.id.toString() === id
       ? (contact = {
           ...contact,
           ...body,
@@ -95,9 +112,9 @@ const updateContact = async (contactId, body) => {
 };
 
 module.exports = {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
+  getAll,
+  getById,
+  remove,
+  create,
+  update,
 };

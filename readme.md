@@ -7,6 +7,7 @@ GoIT Node.js Course Template Homework
 - cors
 - cross-env
 - eslint
+- eslint-config-prettier
 - eslint-config-standard
 - eslint-plugin-import
 - eslint-plugin-node
