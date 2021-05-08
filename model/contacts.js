@@ -9,7 +9,10 @@ const getAll = async () => contacts;
 
 // GET by ID
 const getById = async id => {
-  //
+  const contacts = await getAll();
+  const contactArr = contacts.contacts;
+
+  return contactArr.find(contact => contact.id === id);
 };
 
 /*
@@ -72,44 +75,56 @@ const create = async body => {
 
 // DEL
 const remove = async id => {
-  try {
-    const { contacts } = await getAll();
+  const contacts = await getAll();
+  const contactArr = contacts.contacts;
 
-    const filteredContacts = await contacts.filter(
-      contact => contact.id.toString() !== id,
-    );
+  const updatedContacts = contactArr.filter(
+    contact => contact.id.toString() !== id,
+  );
 
-    await fs.writeFile(contactsPath, JSON.stringify(filteredContacts, null, 2));
+  await fs.writeFile(
+    contactsPath,
+    JSON.stringify({ contacts: updatedContacts }, null, 2),
+  );
 
-    const status = filteredContacts.length !== contacts.length;
+  const status = updatedContacts.length < contactArr.length;
 
-    return status
-      ? { status: 'success', code: 200, message: 'contact deleted' }
-      : { status: 'error', code: 404, message: 'Not found' };
-  } catch (error) {
-    console.log(error.message);
-  }
+  return status;
+};
+
+// PUT
+const update = async (id, body) => {
+  const contacts = await getAll();
+  const contactArr = contacts.contacts;
+
+  const contact = contactArr.find(contact => contact.id === id);
+  const updatedContact = Object.assign(contact, body);
+
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+
+  return updatedContact.id ? updatedContact : null;
+  // console.log('updatedContact-', updatedContact);
 };
 
 // PATCH
-const update = async (id, body) => {
-  const { contacts } = await getAll();
+// const update = async (id, body) => {
+//   const { contacts } = await getAll();
 
-  // {"message": "missing fields"}
+//   // {"message": "missing fields"}
 
-  const cont = await contacts.map(contact => {
-    return contact.id.toString() === id
-      ? (contact = {
-          ...contact,
-          ...body,
-        })
-      : contact;
-  });
+//   const cont = await contacts.map(contact => {
+//     return contact.id.toString() === id
+//       ? (contact = {
+//           ...contact,
+//           ...body,
+//         })
+//       : contact;
+// });
 
-  await fs.writeFile(contactsPath, JSON.stringify(cont, null, 2));
+//   await fs.writeFile(contactsPath, JSON.stringify(cont, null, 2));
 
-  return 'Done!!!';
-};
+//   return 'Done!!!';
+// };
 
 module.exports = {
   getAll,

@@ -14,22 +14,20 @@ router.get('/', async (_, res, next) => {
 });
 
 // GET by ID
-// router.get('/:id', async (req, res, next) => {
-//   const id = req.params.id;
-//   try {
-//     const { code, status, contact, message } = await Contacts.getById(id);
+router.get('/:id', async (req, res, next) => {
+  try {
+    const contact = await Contacts.getById(req.params.id);
 
-//     res.status(code).json({
-//       status,
-//       code,
-//       message,
-//       contact,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-//   res.end();
-// });
+    if (contact) {
+      return res.status(200).json({ status: 'success', code: 200, contact });
+    }
+    return res
+      .status(404)
+      .json({ status: 'error', code: 404, message: 'Not Found' });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // POST
 router.post('/', async (req, res, next) => {
@@ -46,33 +44,54 @@ router.post('/', async (req, res, next) => {
 
 // DEL
 router.delete('/:id', async (req, res, next) => {
-  const id = req.params.id;
   try {
-    const { code, status, message } = await Contacts.remove(id);
+    const contact = await Contacts.remove(req.params.id);
 
-    res.status(code).json({
-      status,
-      code,
-      message,
-    });
+    if (contact) {
+      return res
+        .status(200)
+        .json({ status: 'success', code: 200, message: 'contact deleted' })
+        .end();
+    }
+    return res
+      .status(404)
+      .json({ status: 'error', code: 404, message: 'Not Found' })
+      .end();
   } catch (error) {
     next(error);
   }
-  res.end();
 });
 
 // PATCH
-router.patch('/:id', async (req, res, next) => {
-  const id = req.params.contactId;
-  const body = req.body;
+// router.patch('/:id', async (req, res, next) => {
+// try {
+//   const contact = await Contacts.getById(req.params.id);
+//   console.log('contact!!!', contact);
+//   if (contact) {
+//     return res.status(200).json({ status: 'success', code: 200, contact });
+//   }
+//   return res
+//     .status(404)
+//     .json({ status: 'error', code: 404, message: 'Not Found' });
+// } catch (error) {
+//   next(error);
+// }
+// });
 
+// PUT
+router.put('/:id', async (req, res, next) => {
   try {
-    const response = await Contacts.update(id, body);
-    console.log('response:', response);
+    const contact = await Contacts.update(req.params.id, req.body);
+
+    if (contact) {
+      return res.status(200).json({ status: 'success', code: 200, contact });
+    }
+    return res
+      .status(404)
+      .json({ status: 'error', code: 404, message: 'Not Found' });
   } catch (error) {
     next(error);
   }
-  res.end();
 });
 
 module.exports = router;
