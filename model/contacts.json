@@ -1,14 +1,20 @@
 {
   "contacts": [
     {
-      "id": "-HQl7Z2UZQ0OMIfJx6Azm",
-      "name": "Mango",
+      "id": "nNL8jM12FOptbamhztZgr",
+      "name": "Koba",
       "email": "qwe@qwe.ua",
       "phone": "(067) 452-6791"
     },
     {
-      "id": "nNL8jM12FOptbamhztZgr",
-      "name": "Koba",
+      "id": "gZb88Dui1NEJl4yU2gsJk",
+      "name": "Rita",
+      "email": "qwe@qwe.ua",
+      "phone": "(067) 452-6791"
+    },
+    {
+      "id": "hAEUFRGHvsTUuYIz_rIoY",
+      "name": "Vera",
       "email": "qwe@qwe.ua",
       "phone": "(067) 452-6791"
     }

@@ -5,7 +5,10 @@ const contactsPath = path.join('./model/contacts.json');
 const { nanoid } = require('nanoid');
 
 // GET
-const getAll = async () => contacts;
+const getAll = async () => {
+  const contacts = await fs.readFile(contactsPath, 'utf-8');
+  return await JSON.parse(contacts);
+};
 
 // GET by ID
 const getById = async id => {
@@ -88,7 +91,6 @@ const remove = async id => {
   );
 
   const status = updatedContacts.length < contactArr.length;
-
   return status;
 };
 
