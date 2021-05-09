@@ -64,22 +64,6 @@ router.delete('/:id', async (req, res, next) => {
   }
 });
 
-// PATCH
-// router.patch('/:id', async (req, res, next) => {
-// try {
-//   const contact = await Contacts.getById(req.params.id);
-//   console.log('contact!!!', contact);
-//   if (contact) {
-//     return res.status(200).json({ status: 'success', code: 200, contact });
-//   }
-//   return res
-//     .status(404)
-//     .json({ status: 'error', code: 404, message: 'Not Found' });
-// } catch (error) {
-//   next(error);
-// }
-// });
-
 // PUT
 router.put('/:id', async (req, res, next) => {
   try {
@@ -95,5 +79,34 @@ router.put('/:id', async (req, res, next) => {
     next(error);
   }
 });
+
+// PATCH
+router.patch('/:id/name', async (req, res, next) => {
+  try {
+    const contact = await Contacts.update(req.params.id, req.body);
+
+    if (contact) {
+      return res.status(200).json({ status: 'success', code: 200, contact });
+    }
+    return res
+      .status(404)
+      .json({ status: 'error', code: 404, message: 'Not Found' });
+  } catch (error) {
+    next(error);
+  }
+});
+// try {
+//   const contact = await Contacts.getById(req.params.id);
+//   console.log('contact!!!', contact);
+//   if (contact) {
+//     return res.status(200).json({ status: 'success', code: 200, contact });
+//   }
+//   return res
+//     .status(404)
+//     .json({ status: 'error', code: 404, message: 'Not Found' });
+// } catch (error) {
+//   next(error);
+// }
+// });
 
 module.exports = router;
