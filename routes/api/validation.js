@@ -9,7 +9,7 @@ const schemaCreateContact = Joi.object({
       tlds: { allow: ['com', 'net', 'ua'] },
     })
     .required(),
-  phone: Joi.string().pattern(new RegExp('^[0-9]{10,13}$')).required(),
+  phone: Joi.string().pattern(new RegExp('^[0-9]{10,13}$')).required(), // eslint-disable-line
 });
 
 // PUT
@@ -21,7 +21,7 @@ const schemaUpdateContact = Joi.object({
       tlds: { allow: ['com', 'net', 'ua'] },
     })
     .optional(),
-  phone: Joi.string().pattern(new RegExp('^[0-9]{10,13}$')).optional(),
+  phone: Joi.string().pattern(new RegExp('^[0-9]{10,13}$')).optional(), // eslint-disable-line
 }).min(1); // Должно прийти минимум одно поле
 
 // PATCH

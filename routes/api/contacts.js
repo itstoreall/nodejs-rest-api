@@ -47,12 +47,10 @@ router.post('/', validateCreateContact, async (req, res, next) => {
   }
 });
 
-// DEL
+// DELETE
 router.delete('/:id', async (req, res, next) => {
   try {
     const contacts = await Contacts.remove(req.params.id);
-
-    console.log('contacts-', contacts);
 
     if (contacts) {
       return res.status(200).json({

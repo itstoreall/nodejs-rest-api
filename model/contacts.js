@@ -1,5 +1,4 @@
 const fs = require('fs/promises');
-// const contacts = require('./contacts.json');
 const path = require('path');
 const contactsPath = path.join('./model/contacts.json');
 const { nanoid } = require('nanoid');
@@ -36,7 +35,7 @@ const create = async body => {
   return record;
 };
 
-// DEL
+// DELETE
 const remove = async id => {
   const contacts = await getAll();
   const contactArr = contacts.contacts;
