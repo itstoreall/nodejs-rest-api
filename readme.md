@@ -6,6 +6,7 @@ GoIT Node.js Course Template Homework
 
 - cors
 - cross-env
+- dotenv
 - eslint
 - eslint-config-prettier
 - eslint-config-standard
@@ -14,6 +15,7 @@ GoIT Node.js Course Template Homework
 - eslint-plugin-promise
 - express
 - joi
+- mongodb
 - morgan
 - nanoid
 - nodemon
