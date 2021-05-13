@@ -1,60 +1,37 @@
-const db = require('./db');
-const { ObjectID } = require('mongodb');
-
-// Helper
-const getCollection = async (db, name) => {
-  const client = await db;
-  const collection = await client.db().collection(name);
-  return collection;
-};
+const Contact = require('./schemas/contact');
 
 // GET
 const getAll = async () => {
-  const collection = await getCollection(db, 'contacts');
-  const results = collection.find({}).toArray();
+  const results = await Contact.find({});
   return results;
 };
 
 // GET by ID
 const getById = async id => {
-  const collection = await getCollection(db, 'contacts');
-  const [result] = await collection.find({ _id: new ObjectID(id) }).toArray();
-  console.log(result._id.getTimestamp()); // get Document creating time
+  const result = await Contact.findOne({ _id: id });
   return result;
 };
 
 // POST
 const create = async body => {
-  const collection = await getCollection(db, 'contacts');
-
-  const record = {
-    ...body,
-  };
-
-  const {
-    ops: [result],
-  } = await collection.insertOne(record);
+  const result = await Contact.create(body);
   return result;
 };
 
 // DELETE
 const remove = async id => {
-  const collection = await getCollection(db, 'contacts');
-  const { value: result } = await collection.findOneAndDelete({
-    _id: new ObjectID(id),
-  });
+  const result = await Contact.findByIdAndRemove({ _id: id });
   return result;
 };
 
 // UPDATE
 const update = async (id, body) => {
-  const collection = await getCollection(db, 'contacts');
-  const { value: result } = await collection.findOneAndUpdate(
+  const result = await Contact.findOneAndUpdate(
     {
-      _id: new ObjectID(id),
+      _id: id,
     },
-    { $set: body },
-    { returnOriginal: false },
+    { ...body },
+    { new: true },
   );
   return result;
 };
