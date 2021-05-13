@@ -15,7 +15,7 @@ GoIT Node.js Course Template Homework
 - eslint-plugin-promise
 - express
 - joi
-- mongodb
+- mongoose
 - morgan
 - nanoid
 - nodemon
