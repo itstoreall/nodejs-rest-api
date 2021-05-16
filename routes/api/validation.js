@@ -2,31 +2,43 @@ const Joi = require('joi');
 
 // POST
 const schemaCreateContact = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
+  name: Joi.string()
+    .regex(/[A-Z]\w+/)
+    .min(3)
+    .max(30)
+    .required(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
       tlds: { allow: ['com', 'net', 'ua'] },
     })
     .required(),
-  phone: Joi.string().pattern(new RegExp('^[0-9]{10,13}$')).required(), // eslint-disable-line
+  phone: Joi.string()
+    .regex(/^[0-9]{10,13}$/)
+    .required(),
 });
 
 // PUT
 const schemaUpdateContact = Joi.object({
-  name: Joi.string().min(3).max(30).optional(),
+  name: Joi.string()
+    .regex(/[A-Z]\w+/)
+    .min(3)
+    .max(30)
+    .optional(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
       tlds: { allow: ['com', 'net', 'ua'] },
     })
     .optional(),
-  phone: Joi.string().pattern(new RegExp('^[0-9]{10,13}$')).optional(), // eslint-disable-line
+  phone: Joi.string()
+    .regex(/^[0-9]{10,13}$/)
+    .optional(),
 }).min(1); // Должно прийти минимум одно поле
 
 // PATCH
-const schemaUpdateContactName = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
+const schemaUpdateContactFavorite = Joi.object({
+  favorite: Joi.boolean().optional(),
 });
 
 // Function Validate
@@ -47,6 +59,6 @@ module.exports.validateUpdateContact = (req, _, next) => {
   return validate(schemaUpdateContact, req.body, next);
 };
 
-module.exports.validateUpdateContactName = (req, _, next) => {
-  return validate(schemaUpdateContactName, req.body, next);
+module.exports.validateUpdateContactFavorite = (req, _, next) => {
+  return validate(schemaUpdateContactFavorite, req.body, next);
 };

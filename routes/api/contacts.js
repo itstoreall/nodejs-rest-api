@@ -4,7 +4,7 @@ const Contacts = require('../../model/contacts');
 const {
   validateCreateContact,
   validateUpdateContact,
-  validateUpdateContactName,
+  validateUpdateContactFavorite,
 } = require('./validation');
 
 // GET
@@ -22,13 +22,14 @@ router.get('/', async (_, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const contact = await Contacts.getById(req.params.id);
+    console.log(contact); // toObject
 
     if (contact) {
       return res.status(200).json({ status: 'success', code: 200, contact });
     }
     return res
       .status(404)
-      .json({ status: 'error', code: 404, message: 'Not Found' });
+      .json({ status: 'error', code: 404, message: 'Not Found' }); // toJSON
   } catch (error) {
     next(error);
   }
@@ -43,6 +44,9 @@ router.post('/', validateCreateContact, async (req, res, next) => {
       .status(201)
       .json({ status: 'success', code: 201, data: { contact } });
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      error.status = 400;
+    }
     next(error);
   }
 });
@@ -84,19 +88,25 @@ router.put('/:id', validateUpdateContact, async (req, res, next) => {
 });
 
 // PATCH
-router.patch('/:id/name', validateUpdateContactName, async (req, res, next) => {
-  try {
-    const contact = await Contacts.update(req.params.id, req.body);
+router.patch(
+  '/:id/favorite',
+  validateUpdateContactFavorite,
+  async (req, res, next) => {
+    try {
+      const contact = req.body.hasOwnProperty('favorite') // eslint-disable-line
+        ? await Contacts.update(req.params.id, req.body)
+        : { message: 'missing field favorite' };
 
-    if (contact) {
-      return res.status(200).json({ status: 'success', code: 200, contact });
+      if (contact) {
+        return res.status(200).json({ status: 'success', code: 200, contact });
+      }
+      return res
+        .status(404)
+        .json({ status: 'error', code: 404, message: 'Not Found' });
+    } catch (error) {
+      next(error);
     }
-    return res
-      .status(404)
-      .json({ status: 'error', code: 404, message: 'Not Found' });
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
 
 module.exports = router;
