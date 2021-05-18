@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const { Schema, SchemaTypes } = mongoose;
 const { Gender } = require('../../helpers/constants');
+const bcrypt = require('bcryptjs');
+const SALT_FACTOR = 6;
 
-const contactSchema = new Schema(
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -14,7 +16,7 @@ const contactSchema = new Schema(
         values: [Gender.MALE, Gender.FEMALE, Gender.NONE],
         message: 'But it not allowed',
       },
-      default: 'none',
+      default: Gender.NONE,
     },
     password: {
       type: String,
@@ -24,6 +26,10 @@ const contactSchema = new Schema(
       type: String,
       required: [true, 'Email is required'],
       unique: true,
+      validate(value) {
+        const re = /\s+@\s+\.s+/gi;
+        return re.test(String(value).toLowerCase());
+      },
     },
     subscription: {
       type: String,
@@ -34,10 +40,10 @@ const contactSchema = new Schema(
       type: String,
       default: null,
     },
-    // owner: {
-    //   type: SchemaTypes.ObjectId,
-    //   ref: 'user',
-    // },
+    owner: {
+      type: SchemaTypes.ObjectId, // id from mongoose
+      ref: 'user', // ref link to user collection
+    },
   },
   {
     versionKey: false,
@@ -45,15 +51,20 @@ const contactSchema = new Schema(
   },
 );
 
-contactSchema.virtual('shortContact').get(function () {
-  return `This is contact ${this.name} - ${this.phone}`;
+// Hook
+userSchema.pre('save', async function (next) {
+  // if the password has been changed
+  if (this.isModified('password')) {
+    const salt = await bcrypt.genSalt(SALT_FACTOR);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+  next();
 });
 
-contactSchema.path('name').validate(value => {
-  const re = /[A-Z]\w+/;
-  return re.test(String(value));
-});
+userSchema.method.validPassword = async function (password) {
+  return await bcrypt.compare(String(password), this.password);
+};
 
-const Contact = mongoose.model('contact', contactSchema);
+const User = mongoose.model('user', userSchema);
 
-module.exports = Contact;
+module.exports = User;
