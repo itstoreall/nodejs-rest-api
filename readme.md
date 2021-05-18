@@ -4,6 +4,15 @@ GoIT Node.js Course Template Homework
 
 **_Use:_**
 
+_Auth:_
+
+- bcryptjs
+- jsonwebtoken
+- passport
+- passport-jwt
+
+_DB:_
+
 - cors
 - cross-env
 - dotenv
