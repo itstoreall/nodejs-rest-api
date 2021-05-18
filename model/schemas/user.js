@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { Schema, SchemaTypes } = mongoose;
+// const { Schema, SchemaTypes } = mongoose;
+const { Schema } = mongoose;
 const { Gender } = require('../../helpers/constants');
 const bcrypt = require('bcryptjs');
 const SALT_FACTOR = 6;
@@ -9,6 +10,7 @@ const userSchema = new Schema(
     name: {
       type: String,
       minLength: 2,
+      default: 'Guest',
     },
     gender: {
       type: String,
@@ -18,18 +20,18 @@ const userSchema = new Schema(
       },
       default: Gender.NONE,
     },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
-    },
     email: {
       type: String,
       required: [true, 'Email is required'],
       unique: true,
       validate(value) {
-        const re = /\s+@\s+\.s+/gi;
+        const re = /\S+@\S+\.\S+/gi;
         return re.test(String(value).toLowerCase());
       },
+    },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
     },
     subscription: {
       type: String,
@@ -39,10 +41,6 @@ const userSchema = new Schema(
     token: {
       type: String,
       default: null,
-    },
-    owner: {
-      type: SchemaTypes.ObjectId, // id from mongoose
-      ref: 'user', // ref link to user collection
     },
   },
   {
@@ -61,7 +59,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.method.validPassword = async function (password) {
+userSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(String(password), this.password);
 };
 

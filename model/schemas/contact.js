@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const { Schema, SchemaTypes } = mongoose;
 
 const contactSchema = new Schema(
   {
@@ -24,6 +24,10 @@ const contactSchema = new Schema(
     account: {
       name: String,
       address: String,
+    },
+    owner: {
+      type: SchemaTypes.ObjectId, // id from mongoose
+      ref: 'user', // ref link to user collection
     },
   },
   {
