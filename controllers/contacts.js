@@ -1,14 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const Contacts = require('../../model/contacts');
-const {
-  validateCreateContact,
-  validateUpdateContact,
-  validateUpdateContactFavorite,
-} = require('./validation');
+const Contacts = require('../model/contacts');
 
 // GET
-router.get('/', async (_, res, next) => {
+const getAll = async (_, res, next) => {
   try {
     const data = await Contacts.getAll();
 
@@ -16,10 +9,10 @@ router.get('/', async (_, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
 
 // GET by ID
-router.get('/:id', async (req, res, next) => {
+const getById = async (req, res, next) => {
   try {
     const contact = await Contacts.getById(req.params.id);
     console.log(contact); // toObject
@@ -33,10 +26,10 @@ router.get('/:id', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
 
 // POST
-router.post('/', validateCreateContact, async (req, res, next) => {
+const create = async (req, res, next) => {
   try {
     const contact = await Contacts.create(req.body);
 
@@ -49,10 +42,10 @@ router.post('/', validateCreateContact, async (req, res, next) => {
     }
     next(error);
   }
-});
+};
 
 // DELETE
-router.delete('/:id', async (req, res, next) => {
+const remove = async (req, res, next) => {
   try {
     const contacts = await Contacts.remove(req.params.id);
 
@@ -69,10 +62,10 @@ router.delete('/:id', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
 
-// PUT
-router.put('/:id', validateUpdateContact, async (req, res, next) => {
+// Update (PUT & PATCH)
+const update = async (req, res, next) => {
   try {
     const contact = await Contacts.update(req.params.id, req.body);
 
@@ -85,28 +78,37 @@ router.put('/:id', validateUpdateContact, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
 
 // PATCH
-router.patch(
-  '/:id/favorite',
-  validateUpdateContactFavorite,
-  async (req, res, next) => {
-    try {
-      const contact = req.body.hasOwnProperty('favorite') // eslint-disable-line
-        ? await Contacts.update(req.params.id, req.body)
-        : { message: 'missing field favorite' };
+// async (req, res, next) => {
+//   try {
+//     const contact = req.body.hasOwnProperty('favorite') // eslint-disable-line
+//       ? await Contacts.update(req.params.id, req.body)
+//       : { message: 'missing field favorite' };
 
-      if (contact) {
-        return res.status(200).json({ status: 'success', code: 200, contact });
-      }
-      return res
-        .status(404)
-        .json({ status: 'error', code: 404, message: 'Not Found' });
-    } catch (error) {
-      next(error);
-    }
-  },
-);
+//     if (contact) {
+//       return res.status(200).json({ status: 'success', code: 200, contact });
+//     }
+//     return res
+//       .status(404)
+//       .json({ status: 'error', code: 404, message: 'Not Found' });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
-module.exports = router;
+module.exports = {
+  getAll,
+  getById,
+  create,
+  remove,
+  update,
+};
+
+/**
+ * Вся логика работы находится в cконтроллерах
+ * точнее, все что отдается - взаимодейсвие.
+ *
+ * Из контроллеров осуществляется работа с моделями
+ */
