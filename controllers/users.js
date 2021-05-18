@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Users = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
-// const User = require('../model/schemas/user');
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 // Registration
@@ -47,7 +46,7 @@ const login = async (req, res, next) => {
 
     const payload = { id: user.id };
     const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '2h' });
-    await Users.updateToken(user.id, token);
+    await Users.updateToken(user.id, token); // Записываем token
 
     return res.status(HttpCode.OK).json({
       status: 'success',

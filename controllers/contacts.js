@@ -2,8 +2,10 @@ const Contacts = require('../model/contacts');
 const { HttpCode } = require('../helpers/constants');
 
 // GET
-const getAll = async (_, res, next) => {
+const getAll = async (req, res, next) => {
   try {
+    console.log(req.user); // Выводит юзера в консоль
+
     const data = await Contacts.getAll();
 
     return res
@@ -63,13 +65,11 @@ const remove = async (req, res, next) => {
         message: 'contact deleted',
       });
     }
-    return res
-      .status(HttpCode.NOT_FOUND)
-      .json({
-        status: 'error',
-        code: HttpCode.NOT_FOUND,
-        message: 'Not Found',
-      });
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: 'error',
+      code: HttpCode.NOT_FOUND,
+      message: 'Not Found',
+    });
   } catch (error) {
     next(error);
   }
@@ -85,13 +85,11 @@ const update = async (req, res, next) => {
         .status(HttpCode.OK)
         .json({ status: 'success', code: HttpCode.OK, contact });
     }
-    return res
-      .status(HttpCode.NOT_FOUND)
-      .json({
-        status: 'error',
-        code: HttpCode.NOT_FOUND,
-        message: 'Not Found',
-      });
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: 'error',
+      code: HttpCode.NOT_FOUND,
+      message: 'Not Found',
+    });
   } catch (error) {
     next(error);
   }
