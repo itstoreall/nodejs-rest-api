@@ -8,6 +8,8 @@ _Auth:_
 
 - bcryptjs
 - express-query-boolean
+- express-rate-limit
+- helmet
 - jsonwebtoken
 - mongoose-paginate-v2
 - passport
