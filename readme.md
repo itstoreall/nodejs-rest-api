@@ -7,7 +7,9 @@ GoIT Node.js Course Template Homework
 _Auth:_
 
 - bcryptjs
+- express-query-boolean
 - jsonwebtoken
+- mongoose-paginate-v2
 - passport
 - passport-jwt
 

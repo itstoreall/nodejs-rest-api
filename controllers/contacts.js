@@ -6,11 +6,17 @@ const getAll = async (req, res, next) => {
   try {
     const userId = req.user.id; // provides access to users in controllers
 
-    const data = await Contacts.getAll(userId);
+    // Data
+    const { contacts, total, limit, page } = await Contacts.getAll(
+      userId,
+      req.query, // req.query - pagination
+    );
 
-    return res
-      .status(HttpCode.OK)
-      .json({ status: 'success', code: HttpCode.OK, data });
+    return res.status(HttpCode.OK).json({
+      status: 'success',
+      code: HttpCode.OK,
+      data: { total, limit, page, contacts },
+    });
   } catch (error) {
     next(error);
   }

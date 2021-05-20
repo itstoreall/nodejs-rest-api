@@ -1,20 +1,38 @@
 const Contact = require('./schemas/contact');
 
 // GET
-const getAll = async userId => {
-  const results = await Contact.find({ owner: userId }).populate({
-    // Substants the value and fields of the document instead of ID
-    path: 'owner',
-    select: 'name email gender -_id', // -_id (removes the field from output)
-  });
-  return results;
+const getAll = async (userId, query) => {
+  const {
+    limit = 5, // Limits the number of requests
+    page = 0,
+    sortBy, // Sorting in ascending order
+    sortByDesc, // Sorting in descending order
+    filter, // Filtration: name|email|phone|favorite
+    favorite = false, // Filtration by field
+  } = query; // query from controllers/contacts.js
+
+  const optionsSearch = { owner: userId };
+
+  if (favorite !== null) {
+    optionsSearch.favorite = favorite;
+  }
+
+  const results = await Contact.paginate(optionsSearch, {
+    limit,
+    page,
+    select: filter ? filter.split('|').join(' ') : '',
+  }); // docs
+  const { docs: contacts, totalDocs: total } = results;
+
+  return { contacts, total, limit, page };
 };
 
 // GET by ID
 const getById = async (userId, id) => {
   const result = await Contact.findOne({ _id: id, owner: userId }).populate({
+    // Substants the value and fields of the document instead of ID
     path: 'owner',
-    select: 'name email gender -_id',
+    select: 'name email -_id', // -_id (removes the field from output)
   });
   return result;
 };
