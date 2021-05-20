@@ -2,8 +2,9 @@ const passport = require('passport');
 require('../config/passport');
 const { HttpCode } = require('./constants');
 
-// Authentication
+// Authentication (user hashing)
 const guard = (req, res, next) => {
+  // Third argument is 'done' function form passport
   passport.authenticate('jwt', { session: false }, (err, user) => {
     let token = null;
 

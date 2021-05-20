@@ -15,12 +15,12 @@ passport.use(
     try {
       const user = await Users.findById(payload.id);
 
-      // Не нашли юзера по id
+      // User not found by id
       if (!user) {
         return done(new Error('User not found'), false);
       }
 
-      // У юзера нет токена (разлогинился)
+      // Invalid token (user logged out)
       if (!user.token) {
         return done(null, false);
       }

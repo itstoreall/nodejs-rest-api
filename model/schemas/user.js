@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const { Schema, SchemaTypes } = mongoose;
 const { Schema } = mongoose;
 const { Gender } = require('../../helpers/constants');
 const bcrypt = require('bcryptjs');
@@ -54,11 +53,14 @@ userSchema.pre('save', async function (next) {
   // if the password has been changed
   if (this.isModified('password')) {
     const salt = await bcrypt.genSalt(SALT_FACTOR);
+
+    // User encryption
     this.password = await bcrypt.hash(this.password, salt);
   }
   next();
 });
 
+// Password validation check
 userSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(String(password), this.password);
 };
