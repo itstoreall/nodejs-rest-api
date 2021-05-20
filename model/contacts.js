@@ -21,6 +21,10 @@ const getAll = async (userId, query) => {
     limit,
     page,
     select: filter ? filter.split('|').join(' ') : '',
+    sort: {
+      ...(sortBy ? { [`${sortBy}`]: 1 } : {}), // Sorting in ascending order
+      ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}), // Sorting in descending order
+    }, //
   }); // docs
   const { docs: contacts, totalDocs: total } = results;
 
@@ -66,3 +70,8 @@ module.exports = {
   create,
   update,
 };
+
+/**
+ * Query string from Postman GET (all contacts)
+ * http://localhost:3000/api/contacts?page=0&limit=15&favorite=true&filter=name|email|phone|favorite&sortByDesc=name
+ */
