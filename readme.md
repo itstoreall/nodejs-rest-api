@@ -4,6 +4,19 @@ GoIT Node.js Course Template Homework
 
 **_Use:_**
 
+_Auth:_
+
+- bcryptjs
+- express-query-boolean
+- express-rate-limit
+- helmet
+- jsonwebtoken
+- mongoose-paginate-v2
+- passport
+- passport-jwt
+
+_DB:_
+
 - cors
 - cross-env
 - dotenv
