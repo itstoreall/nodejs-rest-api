@@ -4,6 +4,10 @@ GoIT Node.js Course Template Homework
 
 **_Use:_**
 
+_Avatar:_
+
+- gravatar
+
 _Auth:_
 
 - bcryptjs

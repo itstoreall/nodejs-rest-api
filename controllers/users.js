@@ -17,13 +17,14 @@ const reg = async (req, res, next) => {
       });
     }
 
+    // Creates a new user
     const newUser = await Users.create(req.body);
-    const { email, subscription } = newUser;
+    const { email, subscription, avatarURL } = newUser;
 
     return res.status(HttpCode.CREATED).json({
       status: 'success',
       code: HttpCode.CREATED,
-      ResponseBody: { user: { email, subscription } },
+      ResponseBody: { user: { email, subscription, avatarURL } },
     });
   } catch (e) {
     next(e);
