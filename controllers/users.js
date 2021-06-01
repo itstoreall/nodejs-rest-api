@@ -119,7 +119,16 @@ const updateSubscription = async (req, res, next) => {
   }
 };
 
-module.exports = { reg, login, current, logout, updateSubscription };
+// Avatars
+const avatars = async (req, res, next) => {
+  try {
+    return res.json({});
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { reg, login, current, logout, updateSubscription, avatars };
 
 /**
  * В контроллерах находится вся логика работы
