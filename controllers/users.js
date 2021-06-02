@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Users = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
+const UploadAvatar = require('../services/uploadAvatarsLocal');
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS;
 
 // Signup
 const reg = async (req, res, next) => {
@@ -122,7 +124,30 @@ const updateSubscription = async (req, res, next) => {
 // Avatars
 const avatars = async (req, res, next) => {
   try {
-    return res.json({});
+    const id = req.user.id;
+    const uploads = new UploadAvatar(AVATARS_OF_USERS);
+    const avatarURL = await uploads.saveAvatarToStatic({
+      idUser: id,
+      pathFile: req.file.path,
+      name: req.file.filename,
+      oldFile: req.user.avatar,
+    });
+    await Users.updateAvatar(id, avatarURL);
+
+    if (avatarURL) {
+      return res.json({
+        status: 'success',
+        code: HttpCode.OK,
+        ResponseBody: { avatarURL },
+      });
+    }
+    return res.json({
+      status: 'success',
+      code: HttpCode.UNAUTHORIZED,
+      ResponseBody: {
+        message: 'Not authorized',
+      },
+    });
   } catch (error) {
     next(error);
   }

@@ -6,7 +6,9 @@ GoIT Node.js Course Template Homework
 
 _Avatar:_
 
+- jimp
 - gravatar
+- multer
 
 _Auth:_
 
