@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
     cb(null, UPLOAD_DIR);
   },
 
-  // Indicates how to name
+  // Indicates how to name file
   filename: function (req, file, cb) {
     cb(null, `${Date.now().toString()}-${file.originalname}`);
   },

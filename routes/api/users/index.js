@@ -13,3 +13,7 @@ router.patch('/', guard, ctrl.updateSubscription);
 router.patch('/avatars', [guard, upload.single('avatar')], ctrl.avatars);
 
 module.exports = router;
+
+/**
+ * upload.single('avatar') - avatar is a name which specified in UI Form 'name' attribute
+ */

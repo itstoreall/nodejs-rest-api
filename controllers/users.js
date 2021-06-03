@@ -21,12 +21,12 @@ const reg = async (req, res, next) => {
 
     // Creates a new user
     const newUser = await Users.create(req.body);
-    const { email, subscription, avatarURL } = newUser;
+    const { email, subscription, avatar } = newUser;
 
     return res.status(HttpCode.CREATED).json({
       status: 'success',
       code: HttpCode.CREATED,
-      ResponseBody: { user: { email, subscription, avatarURL } },
+      ResponseBody: { user: { email, subscription, avatar } },
     });
   } catch (e) {
     next(e);
@@ -79,12 +79,14 @@ const logout = async (req, res, next) => {
 // Current
 const current = async (req, res, next) => {
   try {
-    const { email, subscription } = await Users.findByToken(req.user.token);
+    const { email, subscription, avatar } = await Users.findByToken(
+      req.user.token,
+    );
 
     return res.status(HttpCode.OK).json({
       status: 'success',
       code: HttpCode.OK,
-      ResponseBody: { email, subscription },
+      ResponseBody: { email, subscription, avatar },
     });
   } catch (e) {
     next(e);
