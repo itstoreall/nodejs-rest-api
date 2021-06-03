@@ -15,6 +15,7 @@ const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 
 app.use(helmet()); // Secure Express apps (HTTP headers)
 
+// Upload avatars local #1
 require('dotenv').config();
 const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS;
 app.use(express.static(path.join(__dirname, AVATARS_OF_USERS))); // static switched on

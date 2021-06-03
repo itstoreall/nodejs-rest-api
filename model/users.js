@@ -27,9 +27,17 @@ const updateUserSubscription = async subscription => {
   return String(subscription);
 };
 
+/* Local
 const updateAvatar = async (id, avatar) => {
   return await User.updateOne({ _id: id }, { avatar });
 };
+*/
+
+// /* Cloud
+const updateAvatar = async (id, avatar, userIdImg = null) => {
+  return await User.updateOne({ _id: id }, { avatar, userIdImg });
+};
+// */
 
 module.exports = {
   findById,
@@ -38,5 +46,5 @@ module.exports = {
   create,
   updateToken,
   updateUserSubscription,
-  updateAvatar
+  updateAvatar,
 };

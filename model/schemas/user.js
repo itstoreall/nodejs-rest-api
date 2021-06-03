@@ -48,6 +48,10 @@ const userSchema = new Schema(
         return gravatar.url(this.email, { s: 250 }, true); // s - size, false - http, true - https
       },
     },
+    userIdImg: {
+      type: String,
+      default: null,
+    },
   },
   {
     versionKey: false,

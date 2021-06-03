@@ -9,6 +9,7 @@ _Avatar:_
 - jimp
 - gravatar
 - multer
+- cloudinary
 
 _Auth:_
 
