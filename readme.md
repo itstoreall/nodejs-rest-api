@@ -4,6 +4,11 @@ GoIT Node.js Course Template Homework
 
 **_Use:_**
 
+_Tests:_
+
+- jest
+- supertest
+
 _Avatar:_
 
 - jimp

@@ -19,7 +19,6 @@ const guard = (req, res, next) => {
         ResponseBody: {
           message: 'Not authorized',
         },
-        // message: 'Not authorized',
       });
     }
     req.user = user; // Ложим юзера на хранение, чтобы не ходить в базу
