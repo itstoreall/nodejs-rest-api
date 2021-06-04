@@ -7,7 +7,6 @@ GoIT Node.js Course Template Homework
 _Tests:_
 
 - jest
-- supertest
 
 _Avatar:_
 

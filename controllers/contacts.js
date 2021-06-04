@@ -27,7 +27,6 @@ const getById = async (req, res, next) => {
   try {
     const userId = req.user.id; // provides access to users in controllers
     const contact = await Contacts.getById(userId, req.params.id);
-    console.log(contact); // toObject
 
     if (contact) {
       return res
