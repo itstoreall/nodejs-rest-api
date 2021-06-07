@@ -1,8 +1,21 @@
 const jwt = require('jsonwebtoken');
+const cloudinary = require('cloudinary').v2;
+const { promisify } = require('util');
+
 require('dotenv').config();
 const Users = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
+// const UploadAvatar = require('../services/uploadAvatarsLocal'); // for static
+const UploadAvatar = require('../services/uploadAvatarsCloud');
+
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+// const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS; // Local
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 
 // Signup
 const reg = async (req, res, next) => {
@@ -17,13 +30,14 @@ const reg = async (req, res, next) => {
       });
     }
 
+    // Creates a new user
     const newUser = await Users.create(req.body);
-    const { email, subscription } = newUser;
+    const { email, subscription, avatar } = newUser;
 
     return res.status(HttpCode.CREATED).json({
       status: 'success',
       code: HttpCode.CREATED,
-      ResponseBody: { user: { email, subscription } },
+      ResponseBody: { user: { email, subscription, avatar } },
     });
   } catch (e) {
     next(e);
@@ -76,12 +90,14 @@ const logout = async (req, res, next) => {
 // Current
 const current = async (req, res, next) => {
   try {
-    const { email, subscription } = await Users.findByToken(req.user.token);
+    const { email, subscription, avatar } = await Users.findByToken(
+      req.user.token,
+    );
 
     return res.status(HttpCode.OK).json({
       status: 'success',
       code: HttpCode.OK,
-      ResponseBody: { email, subscription },
+      ResponseBody: { email, subscription, avatar },
     });
   } catch (e) {
     next(e);
@@ -118,7 +134,72 @@ const updateSubscription = async (req, res, next) => {
   }
 };
 
-module.exports = { reg, login, current, logout, updateSubscription };
+/* Avatars (Local)
+const avatars = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    const uploads = new UploadAvatar(AVATARS_OF_USERS);
+    const avatarURL = await uploads.saveAvatarToStatic({
+      idUser: id,
+      pathFile: req.file.path,
+      name: req.file.filename,
+      oldFile: req.user.avatar,
+    });
+    await Users.updateAvatar(id, avatarURL);
+
+    if (avatarURL) {
+      return res.json({
+        status: 'success',
+        code: HttpCode.OK,
+        ResponseBody: { avatarURL },
+      });
+    }
+    return res.json({
+      status: 'success',
+      code: HttpCode.UNAUTHORIZED,
+      ResponseBody: {
+        message: 'Not authorized',
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+*/
+
+// /* Avatars (Cloud)
+const avatars = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    const uploadCloud = promisify(cloudinary.uploader.upload);
+    const uploads = new UploadAvatar(uploadCloud);
+    const { userIdImg, avatarURL } = await uploads.saveAvatarToCloud(
+      req.file.path,
+      req.user.userIdImg,
+    );
+    await Users.updateAvatar(id, avatarURL, userIdImg);
+
+    if (avatarURL) {
+      return res.json({
+        status: 'success',
+        code: HttpCode.OK,
+        ResponseBody: { avatarURL },
+      });
+    }
+    return res.json({
+      status: 'success',
+      code: HttpCode.UNAUTHORIZED,
+      ResponseBody: {
+        message: 'Not authorized',
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// */
+
+module.exports = { reg, login, current, logout, updateSubscription, avatars };
 
 /**
  * В контроллерах находится вся логика работы

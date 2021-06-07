@@ -4,6 +4,17 @@ GoIT Node.js Course Template Homework
 
 **_Use:_**
 
+_Tests:_
+
+- jest
+
+_Avatar:_
+
+- jimp
+- gravatar
+- multer
+- cloudinary
+
 _Auth:_
 
 - bcryptjs
