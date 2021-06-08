@@ -7,6 +7,11 @@ const Users = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
 // const UploadAvatar = require('../services/uploadAvatarsLocal'); // for static
 const UploadAvatar = require('../services/uploadAvatarsCloud');
+const EmailService = require('../services/email');
+const {
+  createSenderNodemailer,
+  createSenderSendgrid,
+} = require('../services/senderEmail');
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 // const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS; // Local
