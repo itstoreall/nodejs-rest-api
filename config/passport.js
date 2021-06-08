@@ -25,6 +25,11 @@ passport.use(
         return done(null, false);
       }
 
+      // For email verification
+      if (!user.verify) {
+        return done(null, false);
+      }
+
       // В остальных случаях возвращаем юзера
       return done(null, user);
     } catch (err) {

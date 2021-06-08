@@ -32,7 +32,9 @@ const reg = async (req, res, next) => {
 
     // Creates a new user
     const newUser = await Users.create(req.body);
-    const { email, subscription, avatar } = newUser;
+    const { email, subscription, avatar, verifyToken } = newUser;
+
+    // TODO: send email
 
     return res.status(HttpCode.CREATED).json({
       status: 'success',

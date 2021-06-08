@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const mongoose = require('mongoose');
 const { HttpCode } = require('../../../helpers/constants');
 
 // POST
@@ -62,4 +63,14 @@ module.exports.validateUpdateContact = (req, _, next) => {
 
 module.exports.validateUpdateContactFavorite = (req, _, next) => {
   return validate(schemaUpdateContactFavorite, req.body, next);
+};
+
+module.exports.validateObjectId = (req, _, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return next({
+      status: HttpCode.BAD_REQUEST,
+      message: 'ObjectId is not valid',
+    });
+  }
+  next();
 };
