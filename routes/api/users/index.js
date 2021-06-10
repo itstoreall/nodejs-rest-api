@@ -5,6 +5,7 @@ const guard = require('../../../helpers/guard');
 const { validateUserSignup, validateUserLogin } = require('./validation');
 const upload = require('../../../helpers/upload');
 
+router.get('/verify/:verificationToken', ctrl.verify);
 router.post('/signup', validateUserSignup, ctrl.reg); // return jwt-token
 router.post('/login', validateUserLogin, ctrl.login);
 router.post('/logout', guard, ctrl.logout); // Logout only through guard
