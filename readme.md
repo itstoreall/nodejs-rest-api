@@ -4,6 +4,13 @@ GoIT Node.js Course Template Homework
 
 **_Use:_**
 
+_Email:_
+
+- @sendgrid/mail
+- @types/nodemailer
+- mailgen
+- nodemailer
+
 _Tests:_
 
 - jest
@@ -14,6 +21,8 @@ _Avatar:_
 - gravatar
 - multer
 - cloudinary
+- nodemailer
+- @sendgrid/mail
 
 _Auth:_
 
