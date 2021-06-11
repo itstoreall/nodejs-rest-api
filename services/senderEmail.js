@@ -4,6 +4,7 @@ const config = require('../config/config');
 
 require('dotenv').config();
 
+// Factory
 class CreateSenderSendgrid {
   async send(msg) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -12,9 +13,10 @@ class CreateSenderSendgrid {
   }
 }
 
+// Factory
 class CreateSenderNodemailer {
   async send(msg) {
-    const config = {
+    const options = {
       host: 'smtp.meta.ua',
       port: 465,
       secure: true,
@@ -24,7 +26,7 @@ class CreateSenderNodemailer {
       },
     };
 
-    const transporter = nodemailer.createTransport(config);
+    const transporter = nodemailer.createTransport(options);
     const emailOptions = {
       from: config.email.nodemailer,
       ...msg,

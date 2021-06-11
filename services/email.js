@@ -17,11 +17,12 @@ class EmailService {
     }
   }
 
+  // Template from Mailgen
   #createTemplateVerifyEmail(token, name) {
     const mailGenerator = new Mailgen({
       theme: 'neopolitan',
       product: {
-        name: 'System Contacts',
+        name: 'Reactor',
         link: this.link,
       },
     });
@@ -30,10 +31,10 @@ class EmailService {
       body: {
         name,
         intro:
-          "Welcome to System Contacts! We're very excited to have you on board.",
+          "Welcome to Reactor! We're very excited to have you on board.",
         action: {
           instructions:
-            'To get started with System Contacts, please click here:',
+            'To get started with Reactor, please click here:',
           button: {
             color: '#22BC66', // Optional action button color
             text: 'Confirm your account',

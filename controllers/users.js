@@ -67,11 +67,19 @@ const login = async (req, res, next) => {
     const user = await Users.findByEmail(email);
     const isValidPassword = await user?.validPassword(password);
 
-    if (!user || !isValidPassword || !user.verify) {
+    if (!user || !isValidPassword) {
       return res.status(HttpCode.UNAUTHORIZED).json({
         status: 'error',
         code: HttpCode.UNAUTHORIZED,
         message: 'Email or password is wrong',
+      });
+    }
+
+    if (!user.verify) {
+      return res.status(HttpCode.UNAUTHORIZED).json({
+        status: 'error',
+        code: HttpCode.UNAUTHORIZED,
+        message: 'Check an email for verification',
       });
     }
 
@@ -243,7 +251,48 @@ const verify = async (req, res, next) => {
 };
 
 const repeatSendEmailVerify = async (req, res, next) => {
-  //
+  const user = await Users.findByEmail(req.body.email);
+
+  if (user) {
+    const { name, email, verifyToken, verify } = user;
+
+    if (!verify) {
+      try {
+        const emailService = new EmailService(
+          process.env.NODE_ENV,
+          new CreateSenderNodemailer(),
+        );
+        await emailService.sendVerifyPasswordEmail(verifyToken, email, name);
+
+        return res.status(HttpCode.OK).json({
+          status: 'success',
+          code: HttpCode.OK,
+          ResponseBody: {
+            message: 'Verification email has been resent',
+          },
+        });
+      } catch (e) {
+        console.log(e.message);
+        return next(e);
+      }
+    }
+
+    return res.status(HttpCode.CONFLICT).json({
+      status: 'error',
+      code: HttpCode.CONFLICT,
+      ResponseBody: {
+        message: 'Verification has already been passed',
+      },
+    });
+  }
+
+  return res.status(HttpCode.NOT_FOUND).json({
+    status: 'error',
+    code: HttpCode.NOT_FOUND,
+    ResponseBody: {
+      message: 'User not found',
+    },
+  });
 };
 
 module.exports = {
@@ -254,6 +303,7 @@ module.exports = {
   updateSubscription,
   avatars,
   verify,
+  repeatSendEmailVerify,
 };
 
 /**

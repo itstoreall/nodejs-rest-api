@@ -7,6 +7,7 @@ GoIT Node.js Course Template Homework
 _Email:_
 
 - @sendgrid/mail
+- @types/nodemailer
 - mailgen
 - nodemailer
 
